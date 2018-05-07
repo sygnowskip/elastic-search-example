@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,32 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            throw new NullReferenceException();
+            var random = new Random();
+            var value = random.Next(1, 30);
+            if (value < 15)
+            {
+                throw new NullReferenceException();
+            }
+            else if (value < 20)
+            {
+                throw new InvalidOperationException();
+            }
+            else if (value < 24)
+            {
+                throw new ArgumentNullException();
+            }
+            else if (value < 27)
+            {
+                throw new ArgumentException();
+            }
+            else if (value < 29)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            else
+            {
+                throw new DivideByZeroException();
+            }
             return new string[] {"value1", "value2"};
         }
 
@@ -27,10 +53,11 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public string Get(int id)
         {
+            _logger.LogInformation($"Object with id {id} retrieved");
             return "value";
         }
 
-        // POST api/values
+        [Authorize]
         [HttpPost]
         public void Post([FromBody] string value)
         {
